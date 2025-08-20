@@ -13,13 +13,7 @@ def get_full_path(filename):
         filename += '.txt'
     return os.path.join(DATA_DIR, filename)
 
-def write_to_file(filename, content):
-    full_path = get_full_path(filename)
-    with open(full_path, 'w', encoding='utf-8') as file:
-        file.write(content)
-    print(f"Conteúdo escrito em '{full_path}'")
-
-def read_content_from_file():
+def list_files_in_directory():
     files = [f for f in os.listdir(DATA_DIR) if f.endswith('.txt')]
     
     if not files:
@@ -28,8 +22,21 @@ def read_content_from_file():
 
     print("\nArquivos disponíveis para leitura:")
     for i, filename in enumerate(files):
+
         print(f"  {i + 1}. {filename}")
 
+    return files
+
+def write_to_file(filename, content):
+    full_path = get_full_path(filename)
+    with open(full_path, 'w', encoding='utf-8') as file:
+        file.write(content)
+        print(f"Conteúdo escrito em '{full_path}'")
+
+def read_content_from_file():
+    files = list_files_in_directory()
+    if not files:
+        return
     try:
         choice = int(input(f"Por favor, escolha o número do arquivo (1-{len(files)}): "))
         if 1 <= choice <= len(files):
@@ -92,8 +99,11 @@ while True:
 
     if choice == 1:
         filename = input("Digite o nome do arquivo: ")
-        content = input("Digite o conteúdo a ser escrito:\n")
-        write_to_file(filename, content)
+        if not os.path.exists(get_full_path(filename=filename)):
+            content = input("Digite o conteúdo a ser escrito:\n")
+            write_to_file(filename, content)
+        else:
+            print(f"O arquivo '{filename}.txt' ja existe no diretorio")
     elif choice == 2:
         read_content_from_file()
     elif choice == 3:
